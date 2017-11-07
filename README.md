@@ -13,6 +13,7 @@ smart tool to answer questions in monthly exam of party
 
 ## http_server.py
 http服务器，监听8000端口，并提供一个接口用以查询某试卷的答案
+
 **接口示例**
 POST http://172.23.195.106:8000/giveMeAnswer
 {
