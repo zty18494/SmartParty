@@ -411,10 +411,11 @@ class Question():
             print ('[autoGetAnswers] cannot get the ansewr of', self.question)
             return False
 
-    '''
-    将答案字符串与选项匹配，得出答案选项，或记录未找到的正确答案
-    '''
     def findSubmitAnswers(self):
+        '''
+        将答案字符串与选项匹配，得出答案选项，或记录未找到的正确答案
+        :return:
+        '''
         if self.rst_answers is None or self.options is None:
             print ('[findSubmitAnswers] answers or options is none!')
             return
@@ -425,7 +426,7 @@ class Question():
                 found = False
                 o_index = -1
                 for i in range(0, len(self.options) - 1):
-                    if operator.eq(removePunctuation(self.options[i]), removePunctuation(r)):               ############ TODO:
+                    if operator.eq(removePunctuation(self.options[i]), removePunctuation(r)):               ## TODO:
                         self.submit_choices.append(chr(97 + i))
                         print('(', str(i), ')find choice:', chr(97 + i))
                         found = True
@@ -439,10 +440,11 @@ class Question():
         
         print('[findSubmitAnswers] submit_choice:', self.getSubmitAnsersString(), '\n\n')
 
-    '''
-    组装出最终答案选项
-    '''
     def getSubmitAnsersString(self):
+        '''
+        组装出最终答案选项，格式为："ABC" 或 "ABC，补充答案：xxx"
+        :return:
+        '''
         s = ''
         if self.rst_type is KnowledgeType.JUDGE:
             s = self.submit_judge;
@@ -453,8 +455,27 @@ class Question():
                 s += '，补充答案：'
                 for unfound in self.unfound_list:
                     s += '； '.join(self.unfound_list)
-                    
         return s
+
+    def getSubmitAnsersPair(self):
+        '''
+        组装出最终答案选项，格式为：("ABC", "补充答案：xxx")
+        :return:
+        '''
+        aw = ''
+        if self.rst_type is KnowledgeType.JUDGE:
+            aw = self.submit_judge
+        elif self.rst_type in [KnowledgeType.MULTI_CHOICE, KnowledgeType.SINGLE_CHOICE]:
+            self.submit_choices.sort()
+            aw = ''.join(self.submit_choices)
+            if len(self.unfound_list) > 0:
+                ex = ''
+                for unfound in self.unfound_list:
+                    ex += '； '.join(self.unfound_list)
+                return aw, ex
+            else:
+                return aw, None
+        return aw, None
         
 if __name__ == '__main__':
 #     parseMultiChoiceKnowledgeFromDoc('./test1', True)
